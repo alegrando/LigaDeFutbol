@@ -15,7 +15,17 @@ import java.util.ArrayList;
  * @author DAW
  */
 public class GestionJugador {
-    
+
+    private int id_jugador;
+    private String nombreApellidos;
+    private String nombreCamiseta;
+    private int numeroCamiseta;
+    private int edad;
+    private String equipo;
+    private String posicion;
+    private Blob fotoJugador;
+    int autoincrementoID;
+
     public ArrayList<Jugador> list() {
         ArrayList<Jugador> jugadores = new ArrayList();
         try {
@@ -24,14 +34,14 @@ public class GestionJugador {
             Statement stmt = Conexion.conexion.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
-                int id_jugador = rs.getInt("id_jugador");
-                String nombreApellidos = rs.getString("nombreApellidos");
-                String nombreCamiseta = rs.getString("nombreCamiseta");
-                int numeroCamiseta = rs.getInt("numeroCamiseta");
-                int edad = rs.getInt("edad");
-                String equipo = rs.getString("equipo");
-                String posicion = rs.getString("posicion");
-                Blob fotoJugador = rs.getBlob("fotoJugador");
+                id_jugador = rs.getInt("id_jugador");
+                nombreApellidos = rs.getString("nombreApellidos");
+                nombreCamiseta = rs.getString("nombreCamiseta");
+                numeroCamiseta = rs.getInt("numeroCamiseta");
+                edad = rs.getInt("edad");
+                equipo = rs.getString("equipo");
+                posicion = rs.getString("posicion");
+                fotoJugador = rs.getBlob("fotoJugador");
                 Jugador jugador = new Jugador(id_jugador, nombreApellidos, nombreCamiseta, numeroCamiseta, edad, equipo, posicion, fotoJugador);
                 jugadores.add(jugador);
             }
@@ -40,5 +50,82 @@ public class GestionJugador {
             ex.printStackTrace();
         }
         return jugadores;
+    }
+
+    int Insert(Jugador jugador) {
+
+        id_jugador = jugador.getId_jugador();
+        nombreApellidos = jugador.getNombreApellidos();
+        nombreCamiseta = jugador.getNombreCamiseta();
+        numeroCamiseta = jugador.getNumeroCamisteta();
+        edad = jugador.getEdad();
+        equipo = jugador.getEquipo();
+        posicion = jugador.getPosicion();
+        fotoJugador = jugador.getFotoJugador();
+
+        String sql = "INSERT INTO jugadores (nombreApellidos,nombreCamiseta,numeroCamiseta,edad,equipo,posicion,fotoJugador) VALUES "
+                + "('" + nombreApellidos + "','" + nombreCamiseta + "','" + numeroCamiseta + "','" + edad + "','" + equipo + "','" + posicion +"','" + fotoJugador + "')";
+
+        try {
+            Statement sentenciaSQL = Conexion.conexion.createStatement();
+            sentenciaSQL.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+            ResultSet rs = sentenciaSQL.getGeneratedKeys();
+
+            if (rs.next()) {
+                autoincrementoID = rs.getInt(1);
+            } else {
+                System.out.print("Error al sacar el Id");
+            }
+
+        } catch (Exception e) {
+            System.out.print("Error en la sentencia sql: ");
+            System.out.print(sql);
+            e.printStackTrace();
+
+        }
+        return autoincrementoID;
+
+    }
+    public boolean delete(Jugador jugador) {
+
+        try {
+
+            Statement stmt = Conexion.conexion.createStatement();
+            String sql = "Delete from jugadores where id_jugador =" + jugador.getId_jugador();
+            stmt.executeUpdate(sql);
+
+        } catch (SQLException ex) {
+            System.out.println("Error al consultar la base de datos");
+            ex.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     *
+     * @param alumno
+     * @return
+     */
+    public boolean update(Jugador jugador) {
+        try {
+
+            Statement stmt = Conexion.conexion.createStatement();
+            String sql = "Update alumno set nombreApellidos =" + jugador.getNombreApellidos() + 
+                    ", nombreCamiseta =" + jugador.getNombreCamiseta()+ 
+                    ", numeroCamiseta =" + jugador.getNumeroCamisteta()+ 
+                    ", edad =" + jugador.getEdad()+ 
+                    ", equipo =" + jugador.getEquipo()+ 
+                    ", posicion =" + jugador.getPosicion()+ 
+                    ", fotoJugador =" + jugador.getFotoJugador()+ 
+                    "where id_alumno =" + jugador.getId_jugador();
+            stmt.executeUpdate(sql);
+
+        } catch (SQLException ex) {
+            System.out.println("Error al actualizar la base de datos");
+            ex.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }
