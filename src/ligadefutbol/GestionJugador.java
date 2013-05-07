@@ -130,4 +130,29 @@ public class GestionJugador {
         }
         return true;
     }
+    public Jugador get(int id_jugador) {
+        Jugador jugador = null;
+        try {
+
+            String sql = "SELECT * FROM jugadores where id_jugador =" + id_jugador;
+            Statement stmt = Conexion.conexion.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            if (rs.next()) {
+                id_jugador = rs.getInt("id_jugador");
+                nombreApellidos = rs.getString("nombreApellidos");
+                nombreCamiseta = rs.getString("nombreCamiseta");
+                numeroCamiseta = rs.getInt("numeroCamiseta");
+                edad = rs.getInt("edad");
+                equipo = rs.getString("equipo");
+                posicion = rs.getString("posicion");
+                fotoJugador = rs.getBlob("fotoJugador");
+                jugador = new Jugador(id_jugador, nombreApellidos, nombreCamiseta, numeroCamiseta, edad, equipo, posicion, fotoJugador);
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error al consultar la base de datos");
+            ex.printStackTrace();
+        }
+        return jugador;
+    }
+    
 }

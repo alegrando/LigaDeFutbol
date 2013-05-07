@@ -17,4 +17,9 @@ Create table Jugadores (
 
 insert into jugadores values
 (null, 'Cristiano Ronaldo', 'Ronaldo', 7, 28, 'Real Madrid', 'Delantero', null),
+(null, 'Iker Casillas', 'Casillas', 1, 31, 'Real Madrid', 'Portero', null),
+(null, 'Raul Albiol', 'Albiol', 17, 30, 'Real Madrid', 'Defensa', null),
+(null, 'Mesut Ozil', 'Ozil', 10, 25, 'Real Madrid', 'Centrocampista', null),
+(null, 'Luka Modric', 'Modric', 24, 26, 'Real Madrid', 'Centrocampista', null),
+(null, 'Karim Benzema', 'Benzema', 9, 24, 'Real Madrid', 'Delantero', null),
 (null, 'Lionel Messi', 'Messi', 10, 27, 'FC Barcelona', 'Delantero', null)

@@ -16,6 +16,7 @@ public class NewJFrame extends javax.swing.JFrame {
     public NewJFrame() {
         
         initComponents();
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -30,6 +31,7 @@ public class NewJFrame extends javax.swing.JFrame {
         listaJugadoresPanel1 = new ligadefutbol.ListaJugadoresPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
