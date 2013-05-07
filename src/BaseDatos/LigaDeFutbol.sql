@@ -14,3 +14,7 @@ Create table Jugadores (
     posicion varchar(20),
     fotoJugador blob
 );
+
+insert into jugadores values
+(null, 'Cristiano Ronaldo', 'Ronaldo', 7, 28, 'Real Madrid', 'Delantero', null),
+(null, 'Lionel Messi', 'Messi', 10, 27, 'FC Barcelona', 'Delantero', null)

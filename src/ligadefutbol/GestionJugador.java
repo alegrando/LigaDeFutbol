@@ -108,22 +108,24 @@ public class GestionJugador {
      * @return
      */
     public boolean update(Jugador jugador) {
+        String sql="";
         try {
 
             Statement stmt = Conexion.conexion.createStatement();
-            String sql = "Update alumno set nombreApellidos =" + jugador.getNombreApellidos() + 
-                    ", nombreCamiseta =" + jugador.getNombreCamiseta()+ 
-                    ", numeroCamiseta =" + jugador.getNumeroCamisteta()+ 
-                    ", edad =" + jugador.getEdad()+ 
-                    ", equipo =" + jugador.getEquipo()+ 
-                    ", posicion =" + jugador.getPosicion()+ 
-                    ", fotoJugador =" + jugador.getFotoJugador()+ 
-                    "where id_alumno =" + jugador.getId_jugador();
+            sql = "Update jugadores set nombreApellidos = '" + jugador.getNombreApellidos() + 
+                    "' , nombreCamiseta = '" + jugador.getNombreCamiseta()+ 
+                    "' , numeroCamiseta = " + jugador.getNumeroCamisteta()+ 
+                    " , edad = " + jugador.getEdad()+ 
+                    " , equipo = '" + jugador.getEquipo()+ 
+                    "' , posicion = '" + jugador.getPosicion()+ 
+                    "' , fotoJugador = " + jugador.getFotoJugador()+ 
+                    " where id_jugador = " + jugador.getId_jugador();
             stmt.executeUpdate(sql);
 
         } catch (SQLException ex) {
             System.out.println("Error al actualizar la base de datos");
             ex.printStackTrace();
+            System.out.print(sql);
             return false;
         }
         return true;

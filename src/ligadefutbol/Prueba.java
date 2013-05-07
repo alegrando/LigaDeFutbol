@@ -20,8 +20,9 @@ public class Prueba {
         Conexion.conectar("localhost","root","");
         GestionJugador gestionJugador = new GestionJugador();
         ArrayList<Jugador> pruebaJugador = new ArrayList();
-       Jugador jug2 = new Jugador(0, "Antonio", "Castro", 12, 27, "Real Betis", "Delantero", null );
-        gestionJugador.delete(jug2);
+       Jugador jug2 = new Jugador(4, "Antonio", "Cas", 12, 27, "Real Betis", "Delantero", null );
+       //gestionJugador.Insert(jug2);
+        gestionJugador.update(jug2);
 //        pruebaJugador = gestionJugador.list();
 //        
 //        for(int i=0; i<gestionJugador.list().size(); i++){
