@@ -4,8 +4,10 @@
  */
 package ligadefutbol;
 
+import java.awt.Frame;
 import java.sql.Blob;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -95,6 +97,56 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
             jLabelPosicion.setText("");
         }
     }
+    void insertar() {
+        JugadorDialog dialogoJugador = new JugadorDialog(Frame.getFrames()[0], true);
+        //Crear un nuevo objeto jugador
+        Jugador jugador = new Jugador();
+        //Asignar el jugador obtenido a la ventana de diálogo
+        dialogoJugador.setJugador(jugador);
+        //Mostar la ventana con los campos de edición activados
+        dialogoJugador.activarCampos(true);
+        dialogoJugador.setVisible(true);
+        //Liberar la memoria de pantalla ocupada por la ventana de detalle
+        dialogoJugador.dispose();
+        //Comprobar si se ha pulsado Aceptar o Cancelar 
+        if(dialogoJugador.isAceptado()) {
+            //Añadir el jugador en la BD
+            gestion.Insert(jugador);        
+            //Actualiza los datos en la tabla de la ventana
+            CargarDatosJTable();
+        } 
+    }
+    
+    void editar() {
+        //Obtener número de fila seleccionada en el JTable
+        int numFilaSelec = jTable2.getSelectedRow();
+        //Comprobar que el usuario ha seleccionado alguna fila
+        if(numFilaSelec!=-1) {
+            JugadorDialog dialogoJugador = new JugadorDialog(Frame.getFrames()[0], true);
+            //Obtener el jugador correspondiente a la fila seleccionada
+            Jugador jugador = gestion.get(
+                    Integer.valueOf((String)modeloTabla.getValueAt(numFilaSelec, 0)));
+            //Asignar el jugador obtenido a la ventana de diálogo
+            dialogoJugador.setJugador(jugador);
+            //Mostar la ventana con los detalles del jugador desactivados
+            //dialogoJugador.activarCampos(false);
+            dialogoJugador.setVisible(true);
+            //Liberar la memoria de pantalla ocupada por la ventana de detalle
+            dialogoJugador.dispose();
+            //Comprobar si se ha pulsado Aceptar o Cancelar 
+            if(dialogoJugador.isAceptado()) {
+                //Guardar el contacto en la BD
+                gestion.update(jugador);   
+                //Actualiza los datos en la tabla de la ventana
+                CargarDatosJTable();
+            } 
+        } else {
+            //Si no se ha seleccionado un contacto de la lista hay que notificarlo
+            JOptionPane.showMessageDialog(this, 
+                    "Debe seleccionar un jugador previamente", 
+                    "Atención", JOptionPane.WARNING_MESSAGE);
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -122,6 +174,9 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
         jLabelEquipo = new javax.swing.JLabel();
         jLabelPosicion = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -216,10 +271,10 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabelEdad, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 10, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jLabelEquipo, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabelPosicion, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -235,27 +290,54 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
                 .addGap(6, 6, 6))
         );
 
+        jButton1.setText("Insertar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("Editar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("Suprimir");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(18, 18, 18))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addGap(44, 44, 44)
+                        .addComponent(jButton2)
+                        .addGap(52, 52, 52)
+                        .addComponent(jButton3)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(47, 47, 47)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(93, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2)
+                    .addComponent(jButton3))
+                .addGap(30, 30, 30)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -268,7 +350,18 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
         this.mostrarDatosJugador();
     }//GEN-LAST:event_jTable2KeyReleased
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        insertar();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        editar();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
