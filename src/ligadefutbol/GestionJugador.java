@@ -155,4 +155,39 @@ public class GestionJugador {
         return jugador;
     }
     
+    public ArrayList<Equipo> findEquipos() {
+        ArrayList<Equipo> equipos = new ArrayList();
+        try {
+            String sql = "Select * from equipos group by equipo";
+            Statement stmt = Conexion.conexion.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                Equipo equipoS = new Equipo(rs.getInt("id_equipo"), rs.getString("equipo"));
+                //String equipoS = rs.getString("equipo");
+                equipos.add(equipoS);
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error al consultar la base de datos");
+            ex.printStackTrace();
+        }
+        return equipos;
+    }
+    
+    public ArrayList<Posicion> findPosicion() {
+        ArrayList<Posicion> posiciones = new ArrayList();
+        try {
+            String sql = "Select * from posiciones group by posicion";
+            Statement stmt = Conexion.conexion.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                Posicion posicionS = new Posicion(rs.getInt("id_posicion"), rs.getString("posicion"));
+                //String posicionS = rs.getString("posicion");
+                posiciones.add(posicionS);
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error al consultar la base de datos");
+            ex.printStackTrace();
+        }
+        return posiciones;
+    }
 }

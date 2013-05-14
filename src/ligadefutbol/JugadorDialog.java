@@ -4,6 +4,10 @@
  */
 package ligadefutbol;
 
+import java.util.ArrayList;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
@@ -16,82 +20,105 @@ public class JugadorDialog extends javax.swing.JDialog {
     private Jugador jugador;
     private boolean aceptado = false;
     private boolean hayCambios = false;
-     
+    ArrayList<Equipo> listaEquipos = null;
+    ArrayList<Posicion> listaPosiciones = null;
+    GestionJugador gestionJugador = new GestionJugador();
+    
     public JugadorDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(parent);
         this.setTitle("Datos del jugador");
+        ListaEquipos();
+        ListaPosiciones();
     }
     
+    public void ListaEquipos(){
+        
+        listaEquipos = new ArrayList();
+        int numElementos = gestionJugador.findEquipos().size();
+        Equipo[] arrayParaJComboBox = new Equipo[numElementos];
+        gestionJugador.findEquipos().toArray(arrayParaJComboBox);
+        ComboBoxModel c = new DefaultComboBoxModel(arrayParaJComboBox);
+        jComboBox1.setModel(c);
+
+    }
+    
+    public void ListaPosiciones(){
+        
+        listaEquipos = new ArrayList();
+        int numElementos = gestionJugador.findPosicion().size();
+        Posicion[] arrayParaJComboBox = new Posicion[numElementos];
+        gestionJugador.findPosicion().toArray(arrayParaJComboBox);
+        ComboBoxModel c = new DefaultComboBoxModel(arrayParaJComboBox);
+        jComboBox2.setModel(c);
+
+    }
+
     public Jugador getJugador() {
         return jugador;
     }
-    
+
     public void setJugador(Jugador jugador) {
         this.jugador = jugador;
-        if(jugador.getId_jugador()!=0) {
+        if (jugador.getId_jugador() != 0) {
             jLabelIdentificador.setText(String.valueOf(jugador.getId_jugador()));
         } else {
             jLabelIdentificador.setText("Nuevo");
-        }        
+        }
         jTextField1.setText(jugador.getNombreApellidos());
         jTextField2.setText(jugador.getNombreCamiseta());
         jTextField3.setText(String.valueOf(jugador.getNumeroCamisteta()));
         jTextField4.setText(String.valueOf(jugador.getEdad()));
-        jTextField5.setText(jugador.getEquipo());
-        jTextField6.setText(jugador.getPosicion());
-                
+
     }
-    
+
     public void activarCampos(boolean activar) {
         jTextField1.setEnabled(activar);
         jTextField2.setEnabled(activar);
         jTextField3.setEnabled(activar);
         jTextField4.setEnabled(activar);
-        jTextField5.setEnabled(activar);
-        jTextField6.setEnabled(activar);
-        if(activar){
-            hayCambios=true;
+
+        if (activar) {
+            hayCambios = true;
         }
     }
-    
+
     public boolean isAceptado() {
         return aceptado;
     }
-    
+
     private void aceptar() {
         aceptado = true;
         //Si todos los datos que ha introducido el usuario cumplen con
         //  los tamaños establecidos, se cierra la ventana. En caso contrario,
         //  se avisa al usuario del problema y se mantiene en la ventana
-        if(comprobarCampoTexto(jTextField1, Jugador.TAM_NOMBRE) &&
-                comprobarCampoTexto(jTextField2, Jugador.TAM_CAMISETA) &&
-                comprobarCampoTexto(jTextField3, Jugador.TAM_NUMERO) &&
-                comprobarCampoTexto(jTextField4, Jugador.TAM_EDAD) &&
-                comprobarCampoTexto(jTextField5, Jugador.TAM_EQUIPO) && 
-                comprobarCampoTexto(jTextField6, Jugador.TAM_POSICION) ) {
+        if (comprobarCampoTexto(jTextField1, Jugador.TAM_NOMBRE)
+                && comprobarCampoTexto(jTextField2, Jugador.TAM_CAMISETA)
+                && comprobarCampoTexto(jTextField3, Jugador.TAM_NUMERO)
+                && comprobarCampoTexto(jTextField4, Jugador.TAM_EDAD)) {
             jugador.setNombreApellidos(jTextField1.getText());
             jugador.setNombreCamiseta(jTextField2.getText());
             jugador.setNumeroCamisteta(Integer.valueOf(jTextField3.getText()));
             jugador.setEdad(Integer.valueOf(jTextField4.getText()));
-            jugador.setEquipo(jTextField5.getText());
-            jugador.setPosicion(jTextField6.getText());
+            jugador.setEquipo(String.valueOf(jComboBox1.getSelectedItem()));
+            jugador.setPosicion(String.valueOf(jComboBox2.getSelectedItem()));
             jugador.setFotoJugador(null);
             this.setVisible(false);
         }
     }
-     private void cancelar() {
+
+    private void cancelar() {
         aceptado = false;
-        this.setVisible(false);        
+        this.setVisible(false);
     }
-    
+
     private boolean comprobarCampoTexto(JTextField jTextField, int tamañoMax) {
         //Comprobar si el tamaño del texto excede el tamaño permitido
-        if(jTextField.getText().length() > tamañoMax) {
-            JOptionPane.showMessageDialog(this, 
-                    "El tamaño del dato excede el tamaño máximo permitido", 
-                    "Atención", JOptionPane.WARNING_MESSAGE); 
+        if (jTextField.getText().length() > tamañoMax) {
+            JOptionPane.showMessageDialog(this,
+                    "El tamaño del dato excede el tamaño máximo permitido",
+                    "Atención", JOptionPane.WARNING_MESSAGE);
             //Dejar seleccionado el trozo de texto que sobra
             jTextField.setSelectionStart(tamañoMax);
             jTextField.setSelectionEnd(jTextField.getText().length());
@@ -100,9 +127,8 @@ public class JugadorDialog extends javax.swing.JDialog {
         } else {
             return true;
         }
-            
+
     }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -113,6 +139,8 @@ public class JugadorDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -123,13 +151,20 @@ public class JugadorDialog extends javax.swing.JDialog {
         jTextField2 = new javax.swing.JTextField();
         jTextField3 = new javax.swing.JTextField();
         jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
-        jTextField6 = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jLabelIdentificador = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox();
+        jComboBox2 = new javax.swing.JComboBox();
+
+        jList1.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane1.setViewportView(jList1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -162,6 +197,15 @@ public class JugadorDialog extends javax.swing.JDialog {
         });
 
         jLabel8.setText("Foto:");
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -197,10 +241,10 @@ public class JugadorDialog extends javax.swing.JDialog {
                             .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField6, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                            .addComponent(jTextField5, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
                             .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))))
+                            .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                            .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(56, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -228,12 +272,12 @@ public class JugadorDialog extends javax.swing.JDialog {
                     .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(17, 17, 17)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
@@ -253,6 +297,10 @@ public class JugadorDialog extends javax.swing.JDialog {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         cancelar();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -298,6 +346,8 @@ public class JugadorDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JComboBox jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -307,11 +357,11 @@ public class JugadorDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabelIdentificador;
+    private javax.swing.JList jList1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
     // End of variables declaration//GEN-END:variables
 }

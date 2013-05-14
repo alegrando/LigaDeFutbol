@@ -18,26 +18,26 @@ import javax.swing.table.TableColumn;
  */
 public class ListaJugadoresPanel extends javax.swing.JPanel {
 
-    private DefaultTableModel modeloTabla; 
+    private DefaultTableModel modeloTabla;
     GestionJugador gestion = new GestionJugador();
     Blob foto;
-    
+
     public ListaJugadoresPanel() {
-        Conexion.conectar("localhost","root","");
+        Conexion.conectar("localhost", "root", "");
         initComponents();
         if (!java.beans.Beans.isDesignTime()) {
-        this.CargarDatosJTable();
+            this.CargarDatosJTable();
         }
     }
-    
+
     void CargarDatosJTable() {
-        
+
         ArrayList<Jugador> listaJugadores = new ArrayList();
-         
+
         modeloTabla = new DefaultTableModel() {
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return false;
-            }                
+            }
         };
         jTable2.setModel(modeloTabla);
 
@@ -47,47 +47,47 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
 
         listaJugadores = gestion.list();
         //Recorrer la lista de contactos para añadir algunos datos en el JTable
-        for (Jugador jugador :listaJugadores) {
+        for (Jugador jugador : listaJugadores) {
             //Se va mostrar sólo el nombre y los apellidos
             String[] datosFilaJugador = {
-                String.valueOf(jugador.getId_jugador()), 
-                jugador.getNombreApellidos(), 
-//                jugador.getNombreCamiseta(),
-//                String.valueOf(jugador.getNumeroCamisteta()),
-//                String.valueOf(jugador.getEdad()),
-                jugador.getEquipo(),
-//                jugador.getPosicion()
+                String.valueOf(jugador.getId_jugador()),
+                jugador.getNombreApellidos(),
+                //                jugador.getNombreCamiseta(),
+                //                String.valueOf(jugador.getNumeroCamisteta()),
+                //                String.valueOf(jugador.getEdad()),
+                jugador.getEquipo(), //                jugador.getPosicion()
             };
             modeloTabla.addRow(datosFilaJugador);
-        }        
+        }
 
         //Establecer que sólo se pueda seleccionar una fila
         jTable2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
+
         //Ocultar columna de idContacto
         TableColumn tc = jTable2.getColumn("Id_jugador");
         jTable2.removeColumn(tc);
-        
+
         //Mostrar vacíos los datos de contacto
-        mostrarDatosJugador();        
+        mostrarDatosJugador();
     }
+
     void mostrarDatosJugador() {
         //Obtener número de fila seleccionada en el JTable
         int numFilaSelec = jTable2.getSelectedRow();
         //Comprobar que el usuario ha seleccionado alguna fila
-        
-        if(numFilaSelec!=-1) {
-            
+
+        if (numFilaSelec != -1) {
+
             //Obtener el contacto correspondiente a la fila seleccionada
             Jugador jugador = gestion.get(
-                    Integer.valueOf((String)modeloTabla.getValueAt(numFilaSelec, 0)));
+                    Integer.valueOf((String) modeloTabla.getValueAt(numFilaSelec, 0)));
             jLabelNombre.setText(jugador.getNombreApellidos());
             jLabelCamiseta.setText(jugador.getNombreCamiseta());
             jLabelNumero.setText(String.valueOf(jugador.getNumeroCamisteta()));
             jLabelEdad.setText(String.valueOf(jugador.getEdad()));
             jLabelEquipo.setText(jugador.getEquipo());
             jLabelPosicion.setText(jugador.getPosicion());
-            
+
         } else {
             jLabelNombre.setText("");
             jLabelCamiseta.setText("");
@@ -97,6 +97,7 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
             jLabelPosicion.setText("");
         }
     }
+
     void insertar() {
         JugadorDialog dialogoJugador = new JugadorDialog(Frame.getFrames()[0], true);
         //Crear un nuevo objeto jugador
@@ -109,23 +110,23 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
         //Liberar la memoria de pantalla ocupada por la ventana de detalle
         dialogoJugador.dispose();
         //Comprobar si se ha pulsado Aceptar o Cancelar 
-        if(dialogoJugador.isAceptado()) {
+        if (dialogoJugador.isAceptado()) {
             //Añadir el jugador en la BD
-            gestion.Insert(jugador);        
+            gestion.Insert(jugador);
             //Actualiza los datos en la tabla de la ventana
             CargarDatosJTable();
-        } 
+        }
     }
-    
+
     void editar() {
         //Obtener número de fila seleccionada en el JTable
         int numFilaSelec = jTable2.getSelectedRow();
         //Comprobar que el usuario ha seleccionado alguna fila
-        if(numFilaSelec!=-1) {
+        if (numFilaSelec != -1) {
             JugadorDialog dialogoJugador = new JugadorDialog(Frame.getFrames()[0], true);
             //Obtener el jugador correspondiente a la fila seleccionada
             Jugador jugador = gestion.get(
-                    Integer.valueOf((String)modeloTabla.getValueAt(numFilaSelec, 0)));
+                    Integer.valueOf((String) modeloTabla.getValueAt(numFilaSelec, 0)));
             //Asignar el jugador obtenido a la ventana de diálogo
             dialogoJugador.setJugador(jugador);
             //Mostar la ventana con los detalles del jugador desactivados
@@ -134,16 +135,47 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
             //Liberar la memoria de pantalla ocupada por la ventana de detalle
             dialogoJugador.dispose();
             //Comprobar si se ha pulsado Aceptar o Cancelar 
-            if(dialogoJugador.isAceptado()) {
+            if (dialogoJugador.isAceptado()) {
                 //Guardar el contacto en la BD
-                gestion.update(jugador);   
+                gestion.update(jugador);
                 //Actualiza los datos en la tabla de la ventana
                 CargarDatosJTable();
-            } 
+            }
         } else {
             //Si no se ha seleccionado un contacto de la lista hay que notificarlo
-            JOptionPane.showMessageDialog(this, 
-                    "Debe seleccionar un jugador previamente", 
+            JOptionPane.showMessageDialog(this,
+                    "Debe seleccionar un jugador previamente",
+                    "Atención", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    void suprimir() {
+        //Obtener número de fila seleccionada en el JTable
+        int numFilaSelec = jTable2.getSelectedRow();
+        //Comprobar que el usuario ha seleccionado alguna fila
+        if (numFilaSelec != -1) {
+            //Obtener el jugador correspondiente a la fila seleccionada
+            Jugador jugador = gestion.get(
+                    Integer.valueOf((String) modeloTabla.getValueAt(numFilaSelec, 0)));
+            int respuesta = JOptionPane.showConfirmDialog(this,
+                    "¿Desea suprimir el contacto?\n"
+                    + jugador.getNombreApellidos(),
+                    "Confirmación",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
+            //Comprobar si se ha pulsado Aceptar o Cancelar 
+            if (respuesta == JOptionPane.YES_OPTION) {
+                //Suprimir el jugador de la BD
+                gestion.delete(jugador);
+                //Actualiza los datos en la tabla de la ventana
+                CargarDatosJTable();
+                //Mostrar vacíos los datos del jugador
+                mostrarDatosJugador();
+            }
+        } else {
+            //Si no se ha seleccionado un jugador de la lista hay que notificarlo
+            JOptionPane.showMessageDialog(this,
+                    "Debe seleccionar un contacto previamente",
                     "Atención", JOptionPane.WARNING_MESSAGE);
         }
     }
@@ -218,7 +250,7 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
         jLabel7.setText("Foto:");
 
         jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel14.setText("Foto:");
+        jLabel14.setText("Foto");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -238,16 +270,15 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
                             .addComponent(jLabel4))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabelNombre, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabelNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
                             .addComponent(jLabelCamiseta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabelNumero, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabelEdad, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabelEquipo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabelPosicion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(105, 105, 105)
                         .addComponent(jLabel7)
-                        .addGap(0, 112, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -273,17 +304,17 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
                     .addComponent(jLabelEdad, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabelEquipo, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jLabelPosicion, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabelPosicion, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(25, 25, 25)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(10, 10, 10)
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -305,6 +336,11 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
         });
 
         jButton3.setText("Suprimir");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -329,7 +365,7 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(93, Short.MAX_VALUE)
+                .addContainerGap(76, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2)
@@ -358,6 +394,9 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
         editar();
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        suprimir();
+    }//GEN-LAST:event_jButton3ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
