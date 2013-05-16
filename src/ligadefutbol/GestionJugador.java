@@ -21,8 +21,8 @@ public class GestionJugador {
     private String nombreCamiseta;
     private int numeroCamiseta;
     private int edad;
-    private String equipo;
-    private String posicion;
+    private int id_equipo;
+    private int id_posicion;
     private Blob fotoJugador;
     int autoincrementoID;
 
@@ -39,14 +39,14 @@ public class GestionJugador {
                 nombreCamiseta = rs.getString("nombreCamiseta");
                 numeroCamiseta = rs.getInt("numeroCamiseta");
                 edad = rs.getInt("edad");
-                equipo = rs.getString("equipo");
-                posicion = rs.getString("posicion");
+                id_equipo = rs.getInt("id_equipo");
+                id_posicion = rs.getInt("id_posicion");
                 fotoJugador = rs.getBlob("fotoJugador");
-                Jugador jugador = new Jugador(id_jugador, nombreApellidos, nombreCamiseta, numeroCamiseta, edad, equipo, posicion, fotoJugador);
+                Jugador jugador = new Jugador(id_jugador, nombreApellidos, nombreCamiseta, numeroCamiseta, edad, id_equipo, id_posicion, fotoJugador);
                 jugadores.add(jugador);
             }
         } catch (SQLException ex) {
-            System.out.println("Error al consultar la base de datos");
+            System.out.println("Error al consultar la base de datos aaaaaa");
             ex.printStackTrace();
         }
         return jugadores;
@@ -59,12 +59,12 @@ public class GestionJugador {
         nombreCamiseta = jugador.getNombreCamiseta();
         numeroCamiseta = jugador.getNumeroCamisteta();
         edad = jugador.getEdad();
-        equipo = jugador.getEquipo();
-        posicion = jugador.getPosicion();
+        id_equipo = jugador.getId_equipo();
+        id_posicion = jugador.getId_posicion();
         fotoJugador = jugador.getFotoJugador();
 
-        String sql = "INSERT INTO jugadores (nombreApellidos,nombreCamiseta,numeroCamiseta,edad,equipo,posicion,fotoJugador) VALUES "
-                + "('" + nombreApellidos + "','" + nombreCamiseta + "','" + numeroCamiseta + "','" + edad + "','" + equipo + "','" + posicion +"','" + fotoJugador + "')";
+        String sql = "INSERT INTO jugadores (nombreApellidos,nombreCamiseta,numeroCamiseta,edad,id_equipo,id_posicion,fotoJugador) VALUES "
+                + "('" + nombreApellidos + "','" + nombreCamiseta + "','" + numeroCamiseta + "','" + edad + "','" + id_equipo + "','" + id_posicion +"','" + fotoJugador + "')";
 
         try {
             Statement sentenciaSQL = Conexion.conexion.createStatement();
@@ -116,8 +116,8 @@ public class GestionJugador {
                     "' , nombreCamiseta = '" + jugador.getNombreCamiseta()+ 
                     "' , numeroCamiseta = " + jugador.getNumeroCamisteta()+ 
                     " , edad = " + jugador.getEdad()+ 
-                    " , equipo = '" + jugador.getEquipo()+ 
-                    "' , posicion = '" + jugador.getPosicion()+ 
+                    " , id_equipo = '" + jugador.getId_equipo()+ 
+                    "' , id_posicion = '" + jugador.getId_posicion()+ 
                     "' , fotoJugador = " + jugador.getFotoJugador()+ 
                     " where id_jugador = " + jugador.getId_jugador();
             stmt.executeUpdate(sql);
@@ -143,10 +143,10 @@ public class GestionJugador {
                 nombreCamiseta = rs.getString("nombreCamiseta");
                 numeroCamiseta = rs.getInt("numeroCamiseta");
                 edad = rs.getInt("edad");
-                equipo = rs.getString("equipo");
-                posicion = rs.getString("posicion");
+                id_equipo = rs.getInt("id_equipo");
+                id_posicion = rs.getInt("id_posicion");
                 fotoJugador = rs.getBlob("fotoJugador");
-                jugador = new Jugador(id_jugador, nombreApellidos, nombreCamiseta, numeroCamiseta, edad, equipo, posicion, fotoJugador);
+                jugador = new Jugador(id_jugador, nombreApellidos, nombreCamiseta, numeroCamiseta, edad, id_equipo, id_posicion, fotoJugador);
             }
         } catch (SQLException ex) {
             System.out.println("Error al consultar la base de datos");
@@ -155,15 +155,14 @@ public class GestionJugador {
         return jugador;
     }
     
-    public ArrayList<Equipo> findEquipos() {
+    public ArrayList<Equipo> listEquipos() {
         ArrayList<Equipo> equipos = new ArrayList();
         try {
-            String sql = "Select * from equipos group by equipo";
+            String sql = "Select * from equipos";
             Statement stmt = Conexion.conexion.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 Equipo equipoS = new Equipo(rs.getInt("id_equipo"), rs.getString("equipo"));
-                //String equipoS = rs.getString("equipo");
                 equipos.add(equipoS);
             }
         } catch (SQLException ex) {
@@ -173,15 +172,14 @@ public class GestionJugador {
         return equipos;
     }
     
-    public ArrayList<Posicion> findPosicion() {
+    public ArrayList<Posicion> listPosicion() {
         ArrayList<Posicion> posiciones = new ArrayList();
         try {
-            String sql = "Select * from posiciones group by posicion";
+            String sql = "Select * from posiciones";
             Statement stmt = Conexion.conexion.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 Posicion posicionS = new Posicion(rs.getInt("id_posicion"), rs.getString("posicion"));
-                //String posicionS = rs.getString("posicion");
                 posiciones.add(posicionS);
             }
         } catch (SQLException ex) {

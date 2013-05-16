@@ -55,7 +55,7 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
                 //                jugador.getNombreCamiseta(),
                 //                String.valueOf(jugador.getNumeroCamisteta()),
                 //                String.valueOf(jugador.getEdad()),
-                jugador.getEquipo(), //                jugador.getPosicion()
+                String.valueOf(jugador.getId_equipo()), //                jugador.getPosicion()
             };
             modeloTabla.addRow(datosFilaJugador);
         }
@@ -85,8 +85,8 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
             jLabelCamiseta.setText(jugador.getNombreCamiseta());
             jLabelNumero.setText(String.valueOf(jugador.getNumeroCamisteta()));
             jLabelEdad.setText(String.valueOf(jugador.getEdad()));
-            jLabelEquipo.setText(jugador.getEquipo());
-            jLabelPosicion.setText(jugador.getPosicion());
+            jLabelEquipo.setText(String.valueOf(jugador.getId_equipo()));
+            jLabelPosicion.setText(String.valueOf(jugador.getId_posicion()));
 
         } else {
             jLabelNombre.setText("");

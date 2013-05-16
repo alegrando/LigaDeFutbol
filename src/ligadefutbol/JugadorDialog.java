@@ -23,35 +23,60 @@ public class JugadorDialog extends javax.swing.JDialog {
     ArrayList<Equipo> listaEquipos = null;
     ArrayList<Posicion> listaPosiciones = null;
     GestionJugador gestionJugador = new GestionJugador();
-    
+
     public JugadorDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(parent);
         this.setTitle("Datos del jugador");
-        ListaEquipos();
-        ListaPosiciones();
-    }
-    
-    public void ListaEquipos(){
+//        System.out.print();
         
-        listaEquipos = new ArrayList();
-        int numElementos = gestionJugador.findEquipos().size();
-        Equipo[] arrayParaJComboBox = new Equipo[numElementos];
-        gestionJugador.findEquipos().toArray(arrayParaJComboBox);
-        ComboBoxModel c = new DefaultComboBoxModel(arrayParaJComboBox);
-        jComboBox1.setModel(c);
+         
+    }
 
-    }
-    
-    public void ListaPosiciones(){
+    public void ListaEquipos() {
+
+        int id_equipos;
+        int id_Jug;
+        int numElementos = gestionJugador.listEquipos().size();
+        Equipo[] arrayParaJComboBox = new Equipo[numElementos];
+        gestionJugador.listEquipos().toArray(arrayParaJComboBox);
+        ComboBoxModel c = new DefaultComboBoxModel(arrayParaJComboBox);
+        jComboBox1.setModel(c); 
         
-        listaEquipos = new ArrayList();
-        int numElementos = gestionJugador.findPosicion().size();
+        for (int i = 0; i < gestionJugador.listEquipos().size(); i++) {
+
+            id_equipos = gestionJugador.listEquipos().get(i).getId_equipo();
+            id_Jug = getJugador().getId_equipo();
+            
+                if (id_equipos == id_Jug) {
+                    jComboBox1.setSelectedIndex(i);
+                    
+                }
+        }
+    }
+
+    public void ListaPosiciones() {
+        int id_posicion;
+        int id_Jug;
+
+        int numElementos = gestionJugador.listPosicion().size();
         Posicion[] arrayParaJComboBox = new Posicion[numElementos];
-        gestionJugador.findPosicion().toArray(arrayParaJComboBox);
+        gestionJugador.listPosicion().toArray(arrayParaJComboBox);
         ComboBoxModel c = new DefaultComboBoxModel(arrayParaJComboBox);
         jComboBox2.setModel(c);
+        
+        for (int i = 0; i < gestionJugador.listPosicion().size(); i++) {
+            
+            id_posicion = gestionJugador.listPosicion().get(i).getId_posicion();
+            
+            id_Jug = getJugador().getId_posicion();
+            
+                if (id_posicion == id_Jug) {
+                    jComboBox2.setSelectedIndex(i);
+                    System.out.print(id_posicion);
+                }
+        }
 
     }
 
@@ -70,7 +95,8 @@ public class JugadorDialog extends javax.swing.JDialog {
         jTextField2.setText(jugador.getNombreCamiseta());
         jTextField3.setText(String.valueOf(jugador.getNumeroCamisteta()));
         jTextField4.setText(String.valueOf(jugador.getEdad()));
-
+        ListaEquipos();
+        ListaPosiciones();
     }
 
     public void activarCampos(boolean activar) {
@@ -93,6 +119,9 @@ public class JugadorDialog extends javax.swing.JDialog {
         //Si todos los datos que ha introducido el usuario cumplen con
         //  los tamaños establecidos, se cierra la ventana. En caso contrario,
         //  se avisa al usuario del problema y se mantiene en la ventana
+        int posicionEquipoArray = jComboBox1.getSelectedIndex();
+        int posicionPosicionArray = jComboBox2.getSelectedIndex();
+
         if (comprobarCampoTexto(jTextField1, Jugador.TAM_NOMBRE)
                 && comprobarCampoTexto(jTextField2, Jugador.TAM_CAMISETA)
                 && comprobarCampoTexto(jTextField3, Jugador.TAM_NUMERO)
@@ -101,8 +130,8 @@ public class JugadorDialog extends javax.swing.JDialog {
             jugador.setNombreCamiseta(jTextField2.getText());
             jugador.setNumeroCamisteta(Integer.valueOf(jTextField3.getText()));
             jugador.setEdad(Integer.valueOf(jTextField4.getText()));
-            jugador.setEquipo(String.valueOf(jComboBox1.getSelectedItem()));
-            jugador.setPosicion(String.valueOf(jComboBox2.getSelectedItem()));
+            jugador.setId_equipo(posicionEquipoArray);
+            jugador.setId_posicion(jComboBox2.getSelectedIndex());
             jugador.setFotoJugador(null);
             this.setVisible(false);
         }

@@ -10,8 +10,8 @@ Create table Jugadores (
     nombreCamiseta varchar(20),
     numeroCamiseta tinyint(2),
     edad tinyint(2),
-    equipo varchar(30),
-    posicion varchar(20),
+    id_equipo smallint(8),
+    id_posicion smallint(8),
     fotoJugador blob
 );
 
@@ -26,13 +26,13 @@ Create table Posiciones(
 );
 
 insert into jugadores values
-(null, 'Cristiano Ronaldo', 'Ronaldo', 7, 28, 'Real Madrid', 'Delantero', null),
-(null, 'Iker Casillas', 'Casillas', 1, 31, 'Real Madrid', 'Portero', null),
-(null, 'Raul Albiol', 'Albiol', 17, 30, 'Real Madrid', 'Defensa', null),
-(null, 'Mesut Ozil', 'Ozil', 10, 25, 'Real Madrid', 'Centrocampista', null),
-(null, 'Luka Modric', 'Modric', 24, 26, 'Real Madrid', 'Centrocampista', null),
-(null, 'Karim Benzema', 'Benzema', 9, 24, 'Real Madrid', 'Delantero', null),
-(null, 'Lionel Messi', 'Messi', 10, 27, 'FC Barcelona', 'Delantero', null);
+(null, 'Cristiano Ronaldo', 'Ronaldo', 7, 28, 1, 4, null),
+(null, 'Iker Casillas', 'Casillas', 1, 31, 1, 1, null),
+(null, 'Raul Albiol', 'Albiol', 17, 30, 1, 2, null),
+(null, 'Mesut Ozil', 'Ozil', 10, 25, 1, 3, null),
+(null, 'Luka Modric', 'Modric', 24, 26, 1, 3, null),
+(null, 'Karim Benzema', 'Benzema', 9, 24, 1, 4, null),
+(null, 'Lionel Messi', 'Messi', 10, 27, 2, 4, null);
 
 insert into equipos values 
 (null, 'Real Madrid'),

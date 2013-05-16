@@ -17,8 +17,8 @@ public class Jugador {
     private String nombreCamiseta;
     private int numeroCamisteta;
     private int edad;
-    private String equipo;
-    private String posicion;
+    private int id_equipo;
+    private int id_posicion;
     private Blob fotoJugador;
     
     public static final int TAM_NOMBRE = 30;
@@ -31,14 +31,14 @@ public class Jugador {
     public Jugador() {
     }
 
-    public Jugador(int id_jugador, String nombreApellidos, String nombreCamiseta, int numeroCamisteta, int edad, String equipo, String posicion, Blob fotoJugador) {
+    public Jugador(int id_jugador, String nombreApellidos, String nombreCamiseta, int numeroCamisteta, int edad, int equipo, int posicion, Blob fotoJugador) {
         this.id_jugador = id_jugador;
         this.nombreApellidos = nombreApellidos;
         this.nombreCamiseta = nombreCamiseta;
         this.numeroCamisteta = numeroCamisteta;
         this.edad = edad;
-        this.equipo = equipo;
-        this.posicion = posicion;
+        this.id_equipo = equipo;
+        this.id_posicion = posicion;
         this.fotoJugador = fotoJugador;
     }
 
@@ -90,19 +90,19 @@ public class Jugador {
         this.edad = edad;
     }
 
-    public String getEquipo() {
-        return equipo;
+    public int getId_equipo() {
+        return id_equipo;
     }
 
-    public void setEquipo(String equipo) {
-        this.equipo = equipo;
+    public void setId_equipo(int equipo) {
+        this.id_equipo = equipo;
     }
 
-    public String getPosicion() {
-        return posicion;
+    public int getId_posicion() {
+        return id_posicion;
     }
 
-    public void setPosicion(String posicion) {
-        this.posicion = posicion;
+    public void setId_posicion(int posicion) {
+        this.id_posicion = posicion;
     }
 }
