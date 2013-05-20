@@ -16,15 +16,12 @@ import java.util.ArrayList;
  */
 public class GestionJugador {
 
-    private int id_jugador;
-    private String nombreApellidos;
-    private String nombreCamiseta;
-    private int numeroCamiseta;
-    private int edad;
-    private int id_equipo;
-    private int id_posicion;
-    private Blob fotoJugador;
-    int autoincrementoID;
+    
+    
+    
+    
+    
+    
 
     public ArrayList<Jugador> list() {
         ArrayList<Jugador> jugadores = new ArrayList();
@@ -34,14 +31,14 @@ public class GestionJugador {
             Statement stmt = Conexion.conexion.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
-                id_jugador = rs.getInt("id_jugador");
-                nombreApellidos = rs.getString("nombreApellidos");
-                nombreCamiseta = rs.getString("nombreCamiseta");
-                numeroCamiseta = rs.getInt("numeroCamiseta");
-                edad = rs.getInt("edad");
-                id_equipo = rs.getInt("id_equipo");
-                id_posicion = rs.getInt("id_posicion");
-                fotoJugador = rs.getBlob("fotoJugador");
+                int id_jugador = rs.getInt("id_jugador");
+                String nombreApellidos = rs.getString("nombreApellidos");
+                String nombreCamiseta = rs.getString("nombreCamiseta");
+                int numeroCamiseta = rs.getInt("numeroCamiseta");
+                int edad = rs.getInt("edad");
+                int id_equipo = rs.getInt("id_equipo");
+                int id_posicion = rs.getInt("id_posicion");
+                Blob fotoJugador = rs.getBlob("fotoJugador");
                 Jugador jugador = new Jugador(id_jugador, nombreApellidos, nombreCamiseta, numeroCamiseta, edad, id_equipo, id_posicion, fotoJugador);
                 jugadores.add(jugador);
             }
@@ -54,14 +51,15 @@ public class GestionJugador {
 
     int Insert(Jugador jugador) {
 
-        id_jugador = jugador.getId_jugador();
-        nombreApellidos = jugador.getNombreApellidos();
-        nombreCamiseta = jugador.getNombreCamiseta();
-        numeroCamiseta = jugador.getNumeroCamisteta();
-        edad = jugador.getEdad();
-        id_equipo = jugador.getId_equipo();
-        id_posicion = jugador.getId_posicion();
-        fotoJugador = jugador.getFotoJugador();
+        int id_jugador = jugador.getId_jugador();
+        String nombreApellidos = jugador.getNombreApellidos();
+        String nombreCamiseta = jugador.getNombreCamiseta();
+        int numeroCamiseta = jugador.getNumeroCamisteta();
+        int edad = jugador.getEdad();
+        int id_equipo = jugador.getId_equipo();
+        int id_posicion = jugador.getId_posicion();
+        Blob fotoJugador = jugador.getFotoJugador();
+        int autoincrementoID=0;
 
         String sql = "INSERT INTO jugadores (nombreApellidos,nombreCamiseta,numeroCamiseta,edad,id_equipo,id_posicion,fotoJugador) VALUES "
                 + "('" + nombreApellidos + "','" + nombreCamiseta + "','" + numeroCamiseta + "','" + edad + "','" + id_equipo + "','" + id_posicion +"','" + fotoJugador + "')";
@@ -138,21 +136,40 @@ public class GestionJugador {
             Statement stmt = Conexion.conexion.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             if (rs.next()) {
-                id_jugador = rs.getInt("id_jugador");
-                nombreApellidos = rs.getString("nombreApellidos");
-                nombreCamiseta = rs.getString("nombreCamiseta");
-                numeroCamiseta = rs.getInt("numeroCamiseta");
-                edad = rs.getInt("edad");
-                id_equipo = rs.getInt("id_equipo");
-                id_posicion = rs.getInt("id_posicion");
-                fotoJugador = rs.getBlob("fotoJugador");
-                jugador = new Jugador(id_jugador, nombreApellidos, nombreCamiseta, numeroCamiseta, edad, id_equipo, id_posicion, fotoJugador);
+                int id_jugadors = rs.getInt("id_jugador");
+                String nombreApellidos = rs.getString("nombreApellidos");
+                String nombreCamiseta = rs.getString("nombreCamiseta");
+                int numeroCamiseta = rs.getInt("numeroCamiseta");
+                int edad = rs.getInt("edad");
+                int id_equipo = rs.getInt("id_equipo");
+                int id_posicion = rs.getInt("id_posicion");
+                Blob fotoJugador = rs.getBlob("fotoJugador");
+                jugador = new Jugador(id_jugadors, nombreApellidos, nombreCamiseta, numeroCamiseta, edad, id_equipo, id_posicion, fotoJugador);
             }
         } catch (SQLException ex) {
             System.out.println("Error al consultar la base de datos");
             ex.printStackTrace();
         }
         return jugador;
+    }
+    
+    public Equipo getEquipo(int id_equipo) {
+        Equipo equipo = null;
+        try {
+
+            String sql = "SELECT * FROM equipos where id_equipo =" + id_equipo;
+            Statement stmt = Conexion.conexion.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            if (rs.next()) {
+                int id_equipos = rs.getInt("id_equipo");
+                String equipos = rs.getString("equipo");
+                equipo = new Equipo(id_equipos, equipos);
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error al consultar la base de datos");
+            ex.printStackTrace();
+        }
+        return equipo;
     }
     
     public ArrayList<Equipo> listEquipos() {

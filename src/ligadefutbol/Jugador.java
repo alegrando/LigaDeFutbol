@@ -25,8 +25,7 @@ public class Jugador {
     public static final int TAM_CAMISETA = 20;
     public static final int TAM_NUMERO = 5;
     public static final int TAM_EDAD = 5;
-    public static final int TAM_EQUIPO = 30;
-    public static final int TAM_POSICION = 20;
+
 
     public Jugador() {
     }

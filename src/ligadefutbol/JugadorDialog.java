@@ -20,9 +20,10 @@ public class JugadorDialog extends javax.swing.JDialog {
     private Jugador jugador;
     private boolean aceptado = false;
     private boolean hayCambios = false;
-    ArrayList<Equipo> listaEquipos = null;
-    ArrayList<Posicion> listaPosiciones = null;
+    //ArrayList<Equipo> listaEquipos = null;
+    //ArrayList<Posicion> listaPosiciones = null;
     GestionJugador gestionJugador = new GestionJugador();
+    ListaJugadoresPanel lista = new ListaJugadoresPanel();
 
     public JugadorDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -47,11 +48,10 @@ public class JugadorDialog extends javax.swing.JDialog {
         for (int i = 0; i < gestionJugador.listEquipos().size(); i++) {
 
             id_equipos = gestionJugador.listEquipos().get(i).getId_equipo();
-            id_Jug = getJugador().getId_equipo();
+            id_Jug = jugador.getId_equipo();
             
                 if (id_equipos == id_Jug) {
-                    jComboBox1.setSelectedIndex(i);
-                    
+                    jComboBox1.setSelectedIndex(i);                                    
                 }
         }
     }
@@ -74,7 +74,6 @@ public class JugadorDialog extends javax.swing.JDialog {
             
                 if (id_posicion == id_Jug) {
                     jComboBox2.setSelectedIndex(i);
-                    System.out.print(id_posicion);
                 }
         }
 
@@ -119,9 +118,10 @@ public class JugadorDialog extends javax.swing.JDialog {
         //Si todos los datos que ha introducido el usuario cumplen con
         //  los tamaños establecidos, se cierra la ventana. En caso contrario,
         //  se avisa al usuario del problema y se mantiene en la ventana
-        int posicionEquipoArray = jComboBox1.getSelectedIndex();
-        int posicionPosicionArray = jComboBox2.getSelectedIndex();
-
+        Equipo equipoSeleccionado = (Equipo)jComboBox1.getSelectedItem();
+        Posicion posicionSeleccionada = (Posicion)jComboBox2.getSelectedItem();
+        int equipo = equipoSeleccionado.getId_equipo();
+        int posicion = posicionSeleccionada.getId_posicion();
         if (comprobarCampoTexto(jTextField1, Jugador.TAM_NOMBRE)
                 && comprobarCampoTexto(jTextField2, Jugador.TAM_CAMISETA)
                 && comprobarCampoTexto(jTextField3, Jugador.TAM_NUMERO)
@@ -130,8 +130,8 @@ public class JugadorDialog extends javax.swing.JDialog {
             jugador.setNombreCamiseta(jTextField2.getText());
             jugador.setNumeroCamisteta(Integer.valueOf(jTextField3.getText()));
             jugador.setEdad(Integer.valueOf(jTextField4.getText()));
-            jugador.setId_equipo(posicionEquipoArray);
-            jugador.setId_posicion(jComboBox2.getSelectedIndex());
+            jugador.setId_equipo(equipo);
+            jugador.setId_posicion(posicion);
             jugador.setFotoJugador(null);
             this.setVisible(false);
         }

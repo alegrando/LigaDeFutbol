@@ -19,8 +19,10 @@ import javax.swing.table.TableColumn;
 public class ListaJugadoresPanel extends javax.swing.JPanel {
 
     private DefaultTableModel modeloTabla;
-    GestionJugador gestion = new GestionJugador();
+    private GestionJugador gestion = new GestionJugador();
+    
     Blob foto;
+    private Jugador jugador;
 
     public ListaJugadoresPanel() {
         Conexion.conectar("localhost", "root", "");
@@ -29,9 +31,37 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
             this.CargarDatosJTable();
         }
     }
+    
+    public String mostrarEquipo(){
+        for (int i = 0; i < gestion.listEquipos().size(); i++) {
+
+            int id_equipos = gestion.listEquipos().get(i).getId_equipo();
+            int id_Jug = jugador.getId_equipo();
+            
+                if (id_equipos == id_Jug) {
+                    return gestion.listEquipos().get(i).getEquipo();
+                    
+                }
+        }
+        return null;
+    }
+    
+    public String mostrarPosicion(){
+        for (int i = 0; i < gestion.listPosicion().size(); i++) {
+
+            int id_equipos = gestion.listPosicion().get(i).getId_posicion();
+            int id_Jug = jugador.getId_posicion();
+            
+                if (id_equipos == id_Jug) {
+                    return gestion.listPosicion().get(i).getPosicion();
+                    
+                }
+        }
+        return null;
+    }
 
     void CargarDatosJTable() {
-
+        
         ArrayList<Jugador> listaJugadores = new ArrayList();
 
         modeloTabla = new DefaultTableModel() {
@@ -44,30 +74,30 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
         //Rellenar las cabeceras de las columnas
         String[] cabecera = {"Id_jugador", "Nombre Completo", "Equipo"};
         modeloTabla.setColumnIdentifiers(cabecera);
-
+        
+        
         listaJugadores = gestion.list();
-        //Recorrer la lista de contactos para añadir algunos datos en el JTable
-        for (Jugador jugador : listaJugadores) {
-            //Se va mostrar sólo el nombre y los apellidos
+        //Recorrer la lista de jugadores para añadir algunos datos en el JTable
+        for (Jugador jug : listaJugadores) {
+            int idequipo=jug.getId_equipo();
+            gestion.getEquipo(idequipo);
+            //Se va mostrar sólo el nombreApellidos y equipo
             String[] datosFilaJugador = {
-                String.valueOf(jugador.getId_jugador()),
-                jugador.getNombreApellidos(),
-                //                jugador.getNombreCamiseta(),
-                //                String.valueOf(jugador.getNumeroCamisteta()),
-                //                String.valueOf(jugador.getEdad()),
-                String.valueOf(jugador.getId_equipo()), //                jugador.getPosicion()
-            };
+                String.valueOf(jug.getId_jugador()),
+                jug.getNombreApellidos(),
+                String.valueOf(gestion.getEquipo(idequipo)),
+                };
             modeloTabla.addRow(datosFilaJugador);
         }
 
         //Establecer que sólo se pueda seleccionar una fila
         jTable2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        //Ocultar columna de idContacto
+        //Ocultar columna de id_jugador
         TableColumn tc = jTable2.getColumn("Id_jugador");
         jTable2.removeColumn(tc);
 
-        //Mostrar vacíos los datos de contacto
+        //Mostrar vacíos los datos de jugador
         mostrarDatosJugador();
     }
 
@@ -79,14 +109,14 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
         if (numFilaSelec != -1) {
 
             //Obtener el contacto correspondiente a la fila seleccionada
-            Jugador jugador = gestion.get(
+            jugador = gestion.get(
                     Integer.valueOf((String) modeloTabla.getValueAt(numFilaSelec, 0)));
             jLabelNombre.setText(jugador.getNombreApellidos());
             jLabelCamiseta.setText(jugador.getNombreCamiseta());
             jLabelNumero.setText(String.valueOf(jugador.getNumeroCamisteta()));
             jLabelEdad.setText(String.valueOf(jugador.getEdad()));
-            jLabelEquipo.setText(String.valueOf(jugador.getId_equipo()));
-            jLabelPosicion.setText(String.valueOf(jugador.getId_posicion()));
+            jLabelEquipo.setText(String.valueOf(mostrarEquipo()));
+            jLabelPosicion.setText(String.valueOf(mostrarPosicion()));
 
         } else {
             jLabelNombre.setText("");
@@ -96,12 +126,13 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
             jLabelEquipo.setText("");
             jLabelPosicion.setText("");
         }
+        
     }
 
     void insertar() {
         JugadorDialog dialogoJugador = new JugadorDialog(Frame.getFrames()[0], true);
         //Crear un nuevo objeto jugador
-        Jugador jugador = new Jugador();
+        jugador = new Jugador();
         //Asignar el jugador obtenido a la ventana de diálogo
         dialogoJugador.setJugador(jugador);
         //Mostar la ventana con los campos de edición activados
@@ -125,7 +156,7 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
         if (numFilaSelec != -1) {
             JugadorDialog dialogoJugador = new JugadorDialog(Frame.getFrames()[0], true);
             //Obtener el jugador correspondiente a la fila seleccionada
-            Jugador jugador = gestion.get(
+            jugador = gestion.get(
                     Integer.valueOf((String) modeloTabla.getValueAt(numFilaSelec, 0)));
             //Asignar el jugador obtenido a la ventana de diálogo
             dialogoJugador.setJugador(jugador);
@@ -135,7 +166,7 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
             //Liberar la memoria de pantalla ocupada por la ventana de detalle
             dialogoJugador.dispose();
             //Comprobar si se ha pulsado Aceptar o Cancelar 
-            if (dialogoJugador.isAceptado()) {
+             if (dialogoJugador.isAceptado()) {
                 //Guardar el contacto en la BD
                 gestion.update(jugador);
                 //Actualiza los datos en la tabla de la ventana
@@ -155,10 +186,10 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
         //Comprobar que el usuario ha seleccionado alguna fila
         if (numFilaSelec != -1) {
             //Obtener el jugador correspondiente a la fila seleccionada
-            Jugador jugador = gestion.get(
+            jugador = gestion.get(
                     Integer.valueOf((String) modeloTabla.getValueAt(numFilaSelec, 0)));
             int respuesta = JOptionPane.showConfirmDialog(this,
-                    "¿Desea suprimir el contacto?\n"
+                    "¿Desea suprimir el jugador?\n"
                     + jugador.getNombreApellidos(),
                     "Confirmación",
                     JOptionPane.YES_NO_OPTION,
@@ -175,7 +206,7 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
         } else {
             //Si no se ha seleccionado un jugador de la lista hay que notificarlo
             JOptionPane.showMessageDialog(this,
-                    "Debe seleccionar un contacto previamente",
+                    "Debe seleccionar un jugador previamente",
                     "Atención", JOptionPane.WARNING_MESSAGE);
         }
     }
