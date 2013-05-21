@@ -12,7 +12,7 @@ Create table Jugadores (
     edad tinyint(2),
     id_equipo smallint(8),
     id_posicion smallint(8),
-    fotoJugador blob
+    fotoJugador longblob
 );
 
 Create table Equipos(

@@ -20,6 +20,7 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
 
     private DefaultTableModel modeloTabla;
     private GestionJugador gestion = new GestionJugador();
+    boolean insertar=true;
     
     Blob foto;
     private Jugador jugador;
@@ -117,7 +118,7 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
             jLabelEdad.setText(String.valueOf(jugador.getEdad()));
             jLabelEquipo.setText(String.valueOf(mostrarEquipo()));
             jLabelPosicion.setText(String.valueOf(mostrarPosicion()));
-
+            UtilBlob.BlobToJLabel(jugador.getFotoJugador(), jLabelFoto);
         } else {
             jLabelNombre.setText("");
             jLabelCamiseta.setText("");
@@ -125,18 +126,21 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
             jLabelEdad.setText("");
             jLabelEquipo.setText("");
             jLabelPosicion.setText("");
+            
         }
         
     }
 
     void insertar() {
+        insertar=true;
+        System.out.print(insertar);
         JugadorDialog dialogoJugador = new JugadorDialog(Frame.getFrames()[0], true);
         //Crear un nuevo objeto jugador
         jugador = new Jugador();
+        
         //Asignar el jugador obtenido a la ventana de diálogo
         dialogoJugador.setJugador(jugador);
         //Mostar la ventana con los campos de edición activados
-        dialogoJugador.activarCampos(true);
         dialogoJugador.setVisible(true);
         //Liberar la memoria de pantalla ocupada por la ventana de detalle
         dialogoJugador.dispose();
@@ -150,6 +154,8 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
     }
 
     void editar() {
+        insertar=false;
+        System.out.print(insertar);
         //Obtener número de fila seleccionada en el JTable
         int numFilaSelec = jTable2.getSelectedRow();
         //Comprobar que el usuario ha seleccionado alguna fila
@@ -158,6 +164,7 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
             //Obtener el jugador correspondiente a la fila seleccionada
             jugador = gestion.get(
                     Integer.valueOf((String) modeloTabla.getValueAt(numFilaSelec, 0)));
+            
             //Asignar el jugador obtenido a la ventana de diálogo
             dialogoJugador.setJugador(jugador);
             //Mostar la ventana con los detalles del jugador desactivados
@@ -236,7 +243,7 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
         jLabelEdad = new javax.swing.JLabel();
         jLabelEquipo = new javax.swing.JLabel();
         jLabelPosicion = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
+        jLabelFoto = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -280,8 +287,7 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
 
         jLabel7.setText("Foto:");
 
-        jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel14.setText("Foto");
+        jLabelFoto.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -290,7 +296,7 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabelFoto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
@@ -338,17 +344,15 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabelEquipo, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jLabelPosicion, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabelPosicion, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(10, 10, 10)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabelFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6))
         );
 
@@ -396,7 +400,7 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(76, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2)
@@ -433,7 +437,6 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -443,6 +446,7 @@ public class ListaJugadoresPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabelCamiseta;
     private javax.swing.JLabel jLabelEdad;
     private javax.swing.JLabel jLabelEquipo;
+    private javax.swing.JLabel jLabelFoto;
     private javax.swing.JLabel jLabelNombre;
     private javax.swing.JLabel jLabelNumero;
     private javax.swing.JLabel jLabelPosicion;

@@ -5,6 +5,7 @@
 package ligadefutbol;
 
 import java.sql.Blob;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -15,13 +16,6 @@ import java.util.ArrayList;
  * @author DAW
  */
 public class GestionJugador {
-
-    
-    
-    
-    
-    
-    
 
     public ArrayList<Jugador> list() {
         ArrayList<Jugador> jugadores = new ArrayList();
@@ -49,7 +43,7 @@ public class GestionJugador {
         return jugadores;
     }
 
-    int Insert(Jugador jugador) {
+    public boolean Insert(Jugador jugador) {
 
         int id_jugador = jugador.getId_jugador();
         String nombreApellidos = jugador.getNombreApellidos();
@@ -59,31 +53,24 @@ public class GestionJugador {
         int id_equipo = jugador.getId_equipo();
         int id_posicion = jugador.getId_posicion();
         Blob fotoJugador = jugador.getFotoJugador();
-        int autoincrementoID=0;
 
         String sql = "INSERT INTO jugadores (nombreApellidos,nombreCamiseta,numeroCamiseta,edad,id_equipo,id_posicion,fotoJugador) VALUES "
-                + "('" + nombreApellidos + "','" + nombreCamiseta + "','" + numeroCamiseta + "','" + edad + "','" + id_equipo + "','" + id_posicion +"','" + fotoJugador + "')";
+                + "('" + nombreApellidos + "','" + nombreCamiseta + "','" + numeroCamiseta + "','" + edad + "','" + id_equipo + "','" + id_posicion + "', ? )";
 
         try {
-            Statement sentenciaSQL = Conexion.conexion.createStatement();
-            sentenciaSQL.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
-            ResultSet rs = sentenciaSQL.getGeneratedKeys();
-
-            if (rs.next()) {
-                autoincrementoID = rs.getInt(1);
-            } else {
-                System.out.print("Error al sacar el Id");
-            }
+            PreparedStatement pstmt = Conexion.conexion.prepareStatement(sql);
+            pstmt.setBlob(1, fotoJugador);
+            pstmt.execute();
 
         } catch (Exception e) {
             System.out.print("Error en la sentencia sql: ");
             System.out.print(sql);
             e.printStackTrace();
-
+            return false;
         }
-        return autoincrementoID;
-
+        return true;
     }
+
     public boolean delete(Jugador jugador) {
 
         try {
@@ -106,19 +93,20 @@ public class GestionJugador {
      * @return
      */
     public boolean update(Jugador jugador) {
-        String sql="";
+        String sql = "";
         try {
 
-            Statement stmt = Conexion.conexion.createStatement();
-            sql = "Update jugadores set nombreApellidos = '" + jugador.getNombreApellidos() + 
-                    "' , nombreCamiseta = '" + jugador.getNombreCamiseta()+ 
-                    "' , numeroCamiseta = " + jugador.getNumeroCamisteta()+ 
-                    " , edad = " + jugador.getEdad()+ 
-                    " , id_equipo = '" + jugador.getId_equipo()+ 
-                    "' , id_posicion = '" + jugador.getId_posicion()+ 
-                    "' , fotoJugador = " + jugador.getFotoJugador()+ 
-                    " where id_jugador = " + jugador.getId_jugador();
-            stmt.executeUpdate(sql);
+
+            sql = "Update jugadores set nombreApellidos = '" + jugador.getNombreApellidos()
+                    + "' , nombreCamiseta = '" + jugador.getNombreCamiseta()
+                    + "' , numeroCamiseta = " + jugador.getNumeroCamisteta()
+                    + " , edad = " + jugador.getEdad()
+                    + " , id_equipo = '" + jugador.getId_equipo()
+                    + "' , id_posicion = '" + jugador.getId_posicion()
+                    + "' , fotoJugador = ? where id_jugador = " + jugador.getId_jugador();
+            PreparedStatement pstmt = Conexion.conexion.prepareStatement(sql);
+            pstmt.setBlob(1, jugador.getFotoJugador());
+            pstmt.execute();
 
         } catch (SQLException ex) {
             System.out.println("Error al actualizar la base de datos");
@@ -128,6 +116,7 @@ public class GestionJugador {
         }
         return true;
     }
+
     public Jugador get(int id_jugador) {
         Jugador jugador = null;
         try {
@@ -152,7 +141,7 @@ public class GestionJugador {
         }
         return jugador;
     }
-    
+
     public Equipo getEquipo(int id_equipo) {
         Equipo equipo = null;
         try {
@@ -171,7 +160,7 @@ public class GestionJugador {
         }
         return equipo;
     }
-    
+
     public ArrayList<Equipo> listEquipos() {
         ArrayList<Equipo> equipos = new ArrayList();
         try {
@@ -188,7 +177,7 @@ public class GestionJugador {
         }
         return equipos;
     }
-    
+
     public ArrayList<Posicion> listPosicion() {
         ArrayList<Posicion> posiciones = new ArrayList();
         try {

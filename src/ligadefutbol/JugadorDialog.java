@@ -4,10 +4,13 @@
  */
 package ligadefutbol;
 
+import java.io.File;
+import java.sql.Blob;
 import java.util.ArrayList;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
@@ -20,10 +23,9 @@ public class JugadorDialog extends javax.swing.JDialog {
     private Jugador jugador;
     private boolean aceptado = false;
     private boolean hayCambios = false;
-    //ArrayList<Equipo> listaEquipos = null;
-    //ArrayList<Posicion> listaPosiciones = null;
     GestionJugador gestionJugador = new GestionJugador();
     ListaJugadoresPanel lista = new ListaJugadoresPanel();
+    Blob fotoBlob;
 
     public JugadorDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -31,8 +33,8 @@ public class JugadorDialog extends javax.swing.JDialog {
         this.setLocationRelativeTo(parent);
         this.setTitle("Datos del jugador");
 //        System.out.print();
-        
-         
+
+
     }
 
     public void ListaEquipos() {
@@ -43,16 +45,16 @@ public class JugadorDialog extends javax.swing.JDialog {
         Equipo[] arrayParaJComboBox = new Equipo[numElementos];
         gestionJugador.listEquipos().toArray(arrayParaJComboBox);
         ComboBoxModel c = new DefaultComboBoxModel(arrayParaJComboBox);
-        jComboBox1.setModel(c); 
-        
+        jComboBox1.setModel(c);
+
         for (int i = 0; i < gestionJugador.listEquipos().size(); i++) {
 
             id_equipos = gestionJugador.listEquipos().get(i).getId_equipo();
             id_Jug = jugador.getId_equipo();
-            
-                if (id_equipos == id_Jug) {
-                    jComboBox1.setSelectedIndex(i);                                    
-                }
+
+            if (id_equipos == id_Jug) {
+                jComboBox1.setSelectedIndex(i);
+            }
         }
     }
 
@@ -65,16 +67,16 @@ public class JugadorDialog extends javax.swing.JDialog {
         gestionJugador.listPosicion().toArray(arrayParaJComboBox);
         ComboBoxModel c = new DefaultComboBoxModel(arrayParaJComboBox);
         jComboBox2.setModel(c);
-        
+
         for (int i = 0; i < gestionJugador.listPosicion().size(); i++) {
-            
+
             id_posicion = gestionJugador.listPosicion().get(i).getId_posicion();
-            
+
             id_Jug = getJugador().getId_posicion();
-            
-                if (id_posicion == id_Jug) {
-                    jComboBox2.setSelectedIndex(i);
-                }
+
+            if (id_posicion == id_Jug) {
+                jComboBox2.setSelectedIndex(i);
+            }
         }
 
     }
@@ -87,25 +89,22 @@ public class JugadorDialog extends javax.swing.JDialog {
         this.jugador = jugador;
         if (jugador.getId_jugador() != 0) {
             jLabelIdentificador.setText(String.valueOf(jugador.getId_jugador()));
+            jTextField1.setText(jugador.getNombreApellidos());
+            jTextField2.setText(jugador.getNombreCamiseta());
+            jTextField3.setText(String.valueOf(jugador.getNumeroCamisteta()));
+            jTextField4.setText(String.valueOf(jugador.getEdad()));
+            ListaEquipos();
+            ListaPosiciones();
+            UtilBlob.BlobToJLabel(jugador.getFotoJugador(), jLabelFoto);
         } else {
             jLabelIdentificador.setText("Nuevo");
-        }
-        jTextField1.setText(jugador.getNombreApellidos());
-        jTextField2.setText(jugador.getNombreCamiseta());
-        jTextField3.setText(String.valueOf(jugador.getNumeroCamisteta()));
-        jTextField4.setText(String.valueOf(jugador.getEdad()));
-        ListaEquipos();
-        ListaPosiciones();
-    }
-
-    public void activarCampos(boolean activar) {
-        jTextField1.setEnabled(activar);
-        jTextField2.setEnabled(activar);
-        jTextField3.setEnabled(activar);
-        jTextField4.setEnabled(activar);
-
-        if (activar) {
-            hayCambios = true;
+            jLabelIdentificador.setText(String.valueOf(jugador.getId_jugador()));
+            jTextField1.setText(jugador.getNombreApellidos());
+            jTextField2.setText(jugador.getNombreCamiseta());
+            jTextField3.setText(String.valueOf(jugador.getNumeroCamisteta()));
+            jTextField4.setText(String.valueOf(jugador.getEdad()));
+            ListaEquipos();
+            ListaPosiciones();
         }
     }
 
@@ -118,8 +117,8 @@ public class JugadorDialog extends javax.swing.JDialog {
         //Si todos los datos que ha introducido el usuario cumplen con
         //  los tamaños establecidos, se cierra la ventana. En caso contrario,
         //  se avisa al usuario del problema y se mantiene en la ventana
-        Equipo equipoSeleccionado = (Equipo)jComboBox1.getSelectedItem();
-        Posicion posicionSeleccionada = (Posicion)jComboBox2.getSelectedItem();
+        Equipo equipoSeleccionado = (Equipo) jComboBox1.getSelectedItem();
+        Posicion posicionSeleccionada = (Posicion) jComboBox2.getSelectedItem();
         int equipo = equipoSeleccionado.getId_equipo();
         int posicion = posicionSeleccionada.getId_posicion();
         if (comprobarCampoTexto(jTextField1, Jugador.TAM_NOMBRE)
@@ -132,7 +131,7 @@ public class JugadorDialog extends javax.swing.JDialog {
             jugador.setEdad(Integer.valueOf(jTextField4.getText()));
             jugador.setId_equipo(equipo);
             jugador.setId_posicion(posicion);
-            jugador.setFotoJugador(null);
+            jugador.setFotoJugador(fotoBlob);
             this.setVisible(false);
         }
     }
@@ -187,6 +186,8 @@ public class JugadorDialog extends javax.swing.JDialog {
         jLabel8 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox();
         jComboBox2 = new javax.swing.JComboBox();
+        jLabelFoto = new javax.swing.JLabel();
+        jButton3 = new javax.swing.JButton();
 
         jList1.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -236,45 +237,61 @@ public class JugadorDialog extends javax.swing.JDialog {
             }
         });
 
+        jButton3.setText("Cambiar foto");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
-                .addGap(18, 18, 18)
-                .addComponent(jButton2)
-                .addGap(47, 47, 47))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabelIdentificador, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabelFoto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jButton1)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton2)))
+                        .addGap(47, 47, 47))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                            .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(56, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(18, 18, 18)
+                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabelIdentificador, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jLabel6))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                                    .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(9, 9, 9)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jButton3)
+                                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addContainerGap(56, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -307,9 +324,17 @@ public class JugadorDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addGap(33, 33, 33)
                 .addComponent(jLabel8)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabelFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(35, 35, 35)
+                        .addComponent(jButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2))
@@ -330,6 +355,22 @@ public class JugadorDialog extends javax.swing.JDialog {
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        JFileChooser fc = new JFileChooser();
+        //Mostrar la ventana para abrir archivo y recoger la respuesta
+        //En el parámetro del showOpenDialog se indica la ventana
+        //  al que estará asociado. Con el valor this se asocia a la
+        //  ventana que la abre.
+        int respuesta = fc.showOpenDialog(this);
+        //Comprobar si se ha pulsado Aceptar
+        if (respuesta == JFileChooser.APPROVE_OPTION) {
+            //Guardar 
+            File foto = fc.getSelectedFile();
+            fotoBlob = UtilBlob.FileToBlob(foto);
+            UtilBlob.BlobToJLabel(fotoBlob, jLabelFoto);
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -375,6 +416,7 @@ public class JugadorDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox jComboBox2;
     private javax.swing.JLabel jLabel1;
@@ -385,6 +427,7 @@ public class JugadorDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabelFoto;
     private javax.swing.JLabel jLabelIdentificador;
     private javax.swing.JList jList1;
     private javax.swing.JScrollPane jScrollPane1;
